@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Физика: Интуитивное Понимание</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Noto+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --pastel-blue: #E8F4FD;
+  --pastel-lavender: #F0E6FF;
+  --pastel-mint: #E6F9F0;
+  --pastel-peach: #FFF0E6;
+  --pastel-pink: #FFE6F0;
+  --pastel-gray: #F5F5F7;
+  --text-primary: #1A1A2E;
+  --text-secondary: #5A5A7A;
+  --text-muted: #8E8EA0;
+  --accent-blue: #5B7CF7;
+  --accent-lavender: #9B7BF7;
+  --accent-mint: #5BC09B;
+  --accent-peach: #F79B5B;
+  --accent-pink: #F75B9B;
+  --white: #FFFFFF;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+}
+
+body {
+  font-family: 'Noto Sans', 'Google Sans', -apple-system, sans-serif;
+  background: var(--pastel-gray);
+  color: var(--text-primary);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+.presentation {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 80px;
+  opacity: 0;
+  transform: translateX(100px);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  background: var(--white);
+}
+
+.slide.active {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: all;
+}
+
+.slide.exit-left {
+  opacity: 0;
+  transform: translateX(-100px);
+}
+
+.slide.enter-right {
+  transform: translateX(100px);
+}
+
+.slide-inner {
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Slide layouts */
+.slide-title {
+  text-align: center;
+  background: linear-gradient(135deg, var(--pastel-blue) 0%, var(--pastel-lavender) 50%, var(--pastel-mint) 100%);
+}
+
+.slide-content-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.slide-content-image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.slide-content-image img {
+  max-width: 100%;
+  max-height: 350px;
+  object-fit: contain;
+  border-radius: 24px;
+  box-shadow: var(--shadow-md);
+}
+
+.slide-content-text {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.slide-content-full {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+  text-align: center;
+}
+
+/* Typography */
+.slide-number {
+  position: absolute;
+  top: 30px;
+  left: 40px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.slide-emoji {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.slide-title h1 {
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.slide-title h2 {
+  font-size: 36px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+}
+
+.slide-title p {
+  font-size: 20px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 700px;
+}
+
+.slide-content-split h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.slide-content-split p {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.slide-content-full h2 {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.slide-content-full p {
+  font-size: 17px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 800px;
+}
+
+.highlight {
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+
+.highlight-lavender {
+  color: var(--accent-lavender);
+  font-weight: 600;
+}
+
+.highlight-mint {
+  color: var(--accent-mint);
+  font-weight: 600;
+}
+
+.highlight-peach {
+  color: var(--accent-peach);
+  font-weight: 600;
+}
+
+.highlight-pink {
+  color: var(--accent-pink);
+  font-weight: 600;
+}
+
+/* Key points */
+.key-points {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.key-point {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--pastel-gray);
+}
+
+.key-point-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.key-point-text {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.key-point-text strong {
+  color: var(--text-primary);
+}
+
+/* Quote block */
+.quote-block {
+  background: var(--pastel-blue);
+  border-left: 4px solid var(--accent-blue);
+  border-radius: 0 16px 16px 0;
+  padding: 24px 28px;
+  margin: 20px 0;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+/* Formula block */
+.formula-block {
+  background: var(--pastel-lavender);
+  border-radius: 16px;
+  padding: 20px 32px;
+  margin: 16px 0;
+  text-align: center;
+}
+
+.formula {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--accent-lavender);
+  font-family: 'Georgia', serif;
+}
+
+/* Tag */
+.tag {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.tag-blue { background: var(--pastel-blue); color: var(--accent-blue); }
+.tag-lavender { background: var(--pastel-lavender); color: var(--accent-lavender); }
+.tag-mint { background: var(--pastel-mint); color: var(--accent-mint); }
+.tag-peach { background: var(--pastel-peach); color: var(--accent-peach); }
+
+/* Comparison */
+.comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.comparison-card {
+  border-radius: 20px;
+  padding: 28px;
+  text-align: center;
+}
+
+.comparison-card h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.comparison-card p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.card-blue { background: var(--pastel-blue); }
+.card-lavender { background: var(--pastel-lavender); }
+.card-mint { background: var(--pastel-mint); }
+.card-peach { background: var(--pastel-peach); }
+.card-pink { background: var(--pastel-pink); }
+
+/* Steps */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 16px;
+  background: var(--pastel-gray);
+  transition: transform 0.2s;
+}
+
+.step:hover {
+  transform: translateX(8px);
+}
+
+.step-num {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  flex-shrink: 0;
+  color: var(--white);
+}
+
+.step-num-blue { background: var(--accent-blue); }
+.step-num-lavender { background: var(--accent-lavender); }
+.step-num-mint { background: var(--accent-mint); }
+.step-num-peach { background: var(--accent-peach); }
+
+.step-text {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.step-text strong {
+  color: var(--text-primary);
+}
+
+/* Navigation */
+.nav-controls {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 1000;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 10px 20px;
+  border-radius: 50px;
+  box-shadow: var(--shadow-lg);
+}
+
+.nav-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: var(--pastel-gray);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: var(--text-primary);
+}
+
+.nav-btn:hover {
+  background: var(--accent-blue);
+  color: var(--white);
+  transform: scale(1.05);
+}
+
+.nav-btn:active {
+  transform: scale(0.95);
+}
+
+.nav-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.nav-progress {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #DDD;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.nav-dot.active {
+  background: var(--accent-blue);
+  width: 24px;
+  border-radius: 4px;
+}
+
+.nav-counter {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+  min-width: 50px;
+  text-align: center;
+}
+
+/* Progress bar */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-blue), var(--accent-lavender), var(--accent-mint));
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1001;
+  border-radius: 0 2px 2px 0;
+}
+
+/* Decorative elements */
+.deco-circle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+/* Slide-specific backgrounds */
+.bg-blue { background: linear-gradient(135deg, var(--pastel-blue) 0%, var(--white) 60%); }
+.bg-lavender { background: linear-gradient(135deg, var(--pastel-lavender) 0%, var(--white) 60%); }
+.bg-mint { background: linear-gradient(135deg, var(--pastel-mint) 0%, var(--white) 60%); }
+.bg-peach { background: linear-gradient(135deg, var(--pastel-peach) 0%, var(--white) 60%); }
+.bg-pink { background: linear-gradient(135deg, var(--pastel-pink) 0%, var(--white) 60%); }
+.bg-gray { background: linear-gradient(135deg, var(--pastel-gray) 0%, var(--white) 60%); }
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.slide.active .animate-in {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.slide.active .delay-1 { animation-delay: 0.1s; opacity: 0; }
+.slide.active .delay-2 { animation-delay: 0.2s; opacity: 0; }
+.slide.active .delay-3 { animation-delay: 0.3s; opacity: 0; }
+.slide.active .delay-4 { animation-delay: 0.4s; opacity: 0; }
+.slide.active .delay-5 { animation-delay: 0.5s; opacity: 0; }
+
+/* Closing slide */
+.slide-closing {
+  background: linear-gradient(135deg, var(--pastel-blue) 0%, var(--pastel-lavender) 33%, var(--pastel-mint) 66%, var(--pastel-peach) 100%);
+  text-align: center;
+}
+
+.slide-closing h1 {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.slide-closing p {
+  font-size: 22px;
+  color: var(--text-secondary);
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .slide { padding: 40px 24px; }
+  .slide-title h1 { font-size: 32px; }
+  .slide-title h2 { font-size: 24px; }
+  .slide-content-split { grid-template-columns: 1fr; gap: 30px; }
+  .slide-title p { font-size: 16px; }
+  .slide-content-split h2 { font-size: 22px; }
+  .slide-content-split p { font-size: 14px; }
+  .comparison { grid-template-columns: 1fr; }
+  .nav-controls { padding: 8px 14px; gap: 10px; }
+}
+
+/* Keyboard hint */
+.keyboard-hint {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: var(--text-muted);
+  opacity: 0.6;
+  z-index: 999;
+}
+
+/* Image container */
+.img-container {
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background: var(--white);
+}
+
+.img-container img {
+  display: block;
+  width: 100%;
+  max-height: 340px;
+  object-fit: contain;
+}
+
+/* Section header */
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.section-line {
+  flex: 1;
+  height: 2px;
+  border-radius: 1px;
+}
+
+.line-blue { background: var(--accent-blue); }
+.line-lavender { background: var(--accent-lavender); }
+.line-mint { background: var(--accent-mint); }
+.line-peach { background: var(--accent-peach); }
+.line-pink { background: var(--accent-pink); }
+
+/* Feynman quote style */
+.feynman {
+  background: linear-gradient(135deg, var(--pastel-peach), var(--pastel-pink));
+  border-radius: 20px;
+  padding: 24px 28px;
+  margin-top: 16px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-primary);
+}
+
+.feynman-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent-peach);
+  margin-bottom: 8px;
+}
+
+/* Icon grid */
+.icon-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.icon-card {
+  background: var(--pastel-gray);
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.icon-card:hover { transform: translateY(-4px); }
+
+.icon-card .icon { font-size: 32px; margin-bottom: 8px; }
+.icon-card .label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.icon-card .desc { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="presentation" id="presentation">
+
+<!-- Slide 1: Title -->
+<div class="slide slide-title active" data-slide="1">
+  <div class="slide-inner" style="align-items:center;">
+    <div class="slide-emoji animate-in delay-1"></div>
+    <h1 class="animate-in delay-2" style="font-size:48px;">Физика:<br>Интуитивное Понимание</h1>
+    <p class="animate-in delay-3">15 фундаментальных вопросов о гравитации, движении и пространстве-времени — объяснённых просто</p>
+    <div class="animate-in delay-4" style="margin-top:24px;">
+      <span class="tag tag-blue">Гравитация</span>
+      <span class="tag tag-lavender" style="margin-left:8px;">Относительность</span>
+      <span class="tag tag-mint" style="margin-left:8px;">Механика</span>
+    </div>
+    <p class="animate-in delay-5" style="margin-top:40px;font-size:14px;color:var(--text-muted);">Нажмите → или пробел для продолжения</p>
+  </div>
+</div>
+
+<!-- Slide 2: Topic 1 - Title -->
+<div class="slide bg-blue" data-slide="2">
+  <div class="slide-number">01 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji">🍎</span>
+        <h2>Почему предметы падают вниз?</h2>
+      </div>
+      <p>«Низ» — это не особое направление на карте Вселенной. <span class="highlight">«Низ» — это просто туда, где центр большой кучи атомов</span>, на которой мы сидим.</p>
+      <div class="quote-block">
+        Земля настолько массивна, что <strong>проминает пространство</strong> вокруг себя. Яблоко просто скользит по этому прогибу.
+      </div>
+      <span class="tag tag-blue">Занятие 1 — Гравитация</span>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/1bc1e4dfd-7fc0-47f9-8142-5cb0711329ac.png" alt="Гравитационная яма">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 3: Topic 1 - Continuation -->
+<div class="slide bg-blue" data-slide="3">
+  <div class="slide-number">02 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Пространство-время — это резиновая простыня</h2>
+    <div class="comparison animate-in delay-2">
+      <div class="comparison-card card-blue">
+        <h3>🏀 Тяжёлый шар</h3>
+        <p>Земля создаёт глубокий прогиб в пространстве-времени. Чем больше масса — тем сильнее искривление.</p>
+      </div>
+      <div class="comparison-card card-lavender">
+        <h3>🍎 Лёгкий шарик</h3>
+        <p>Яблоко катится к центру не потому, что его кто-то толкнул, а потому что <strong>резина прогнулась</strong>.</p>
+      </div>
+    </div>
+    <div class="steps animate-in delay-3">
+      <div class="step">
+        <div class="step-num step-num-blue">1</div>
+        <div class="step-text"><strong>Масса</strong> прогибает пространство-время</div>
+      </div>
+      <div class="step">
+        <div class="step-num step-num-blue">2</div>
+        <div class="step-text"><strong>Объекты</strong> скользят по прогибу — это и есть гравитация</div>
+      </div>
+      <div class="step">
+        <div class="step-num step-num-blue">3</div>
+        <div class="step-text"><strong>Луна</strong> делает то же самое — она постоянно «падает» мимо Земли</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 4: Topic 2 - Title -->
+<div class="slide bg-lavender" data-slide="4">
+  <div class="slide-number">03 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji">🌕</span>
+        <h2>Почему на Луне вес меньше?</h2>
+      </div>
+      <p>Вы снова путаете два слова: <span class="highlight-lavender">масса</span> и <span class="highlight-lavender">вес</span>. Это смертный грех для инженера!</p>
+      <div class="comparison animate-in delay-2">
+        <div class="comparison-card card-lavender">
+          <h3>⚖️ Масса</h3>
+          <p>Мера упрямства объекта. Сколько в вас «мяса и костей». На Луне вы такой же толстый!</p>
+        </div>
+        <div class="comparison-card card-peach">
+          <h3>🏋️ Вес</h3>
+          <p>Насколько сильно планета <strong>дёргает</strong> вас за массу с помощью гравитации.</p>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/1d608be10-ca01-4d33-911b-387f3e319d18.png" alt="Астронавт на Луне">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 5: Topic 2 - Continuation -->
+<div class="slide bg-lavender" data-slide="5">
+  <div class="slide-number">04 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Дизайн движения: медленный прыжок</h2>
+    <p class="animate-in delay-2">Из-за того, что вес меньше, а масса та же — <span class="highlight-lavender">ускорение свободного падения</span> другое. Вы прыгаете, взлетаете медленно и плавно, как в замедленной съёмке.</p>
+    <div class="key-points animate-in delay-3">
+      <div class="key-point">
+        <span class="key-point-icon"></span>
+        <span class="key-point-text"><strong>Масса</strong> — ваша инерция, она неизменна везде</span>
+      </div>
+      <div class="key-point">
+        <span class="key-point-icon">🌙</span>
+        <span class="key-point-text"><strong>Вес</strong> — гравитация Луны в <strong>6 раз слабее</strong> земной</span>
+      </div>
+      <div class="key-point">
+        <span class="key-point-icon">🎬</span>
+        <span class="key-point-text"><strong>Изменение g</strong> меняет всю механику анимации персонажа</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 6: Topic 3 - Title -->
+<div class="slide bg-peach" data-slide="6">
+  <div class="slide-number">05 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji">🔨</span>
+        <h2>Перо и молоток на Луне</h2>
+      </div>
+      <p style="font-size:28px;font-weight:700;color:var(--accent-peach);margin:16px 0;">БАХ! Оба в грунт! И одновременно!</p>
+      <p>Гравитации <span class="highlight-peach">наплевать</span>, из чего вы сделаны — из перьев или из титана. Ей важно только количество массы.</p>
+      <div class="feynman animate-in delay-3">
+        <div class="feynman-label">💡 Фейнман-версия</div>
+        На Земле перо падает медленно, потому что оно плывёт в <strong>супе из молекул воздуха</strong>. На Луне супа нет. Вакуум.
+      </div>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/15e7693f1-4c3c-45e7-b98f-b36b44152454.png" alt="Перо и молоток">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 7: Topic 3 - Continuation -->
+<div class="slide bg-peach" data-slide="7">
+  <div class="slide-number">06 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Воздушный суп vs Вакуум</h2>
+    <div class="comparison animate-in delay-2">
+      <div class="comparison-card card-peach">
+        <h3> Земля</h3>
+        <p>Перо: огромная площадь + малая масса = <strong>огромное сопротивление</strong>. Воздух держит его, как вода держит на плаву.</p>
+        <p style="margin-top:10px;">Молоток: маленькое лобовое сопротивление, пробивает «воздушный суп».</p>
+      </div>
+      <div class="comparison-card card-mint">
+        <h3>🌙 Луна</h3>
+        <p><strong>Нет турбулентности.</strong> Только масса и гравитация. Оба падают с одинаковым ускорением <strong>g</strong>.</p>
+        <p style="margin-top:10px;">Чистая, незамутнённая физика.</p>
+      </div>
+    </div>
+    <div class="quote-block animate-in delay-3">
+      Ускорение свободного падения <strong>не зависит от формы</strong> объекта — это доказал ещё Галилей.
+    </div>
+  </div>
+</div>
+
+<!-- Slide 8: Topic 4 - Title -->
+<div class="slide bg-mint" data-slide="8">
+  <div class="slide-number">07 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji">️</span>
+        <h2>Почему мы не чувствуем вращение Земли?</h2>
+      </div>
+      <p>Потому что мы — часть этой <span class="highlight-mint">ламинарной (плавной) струи</span>!</p>
+      <p>Всё вокруг нас — воздух, дома, океаны, наши внутренности — <strong>крутится вместе</strong> с Землёй с одной и той же скоростью.</p>
+      <div class="key-points animate-in delay-3">
+        <div class="key-point">
+          <span class="key-point-icon">🌊</span>
+          <span class="key-point-text"><strong>Ламинарное течение</strong> — частицы движутся параллельно, не перемешиваясь</span>
+        </div>
+        <div class="key-point">
+          <span class="key-point-icon">🚌</span>
+          <span class="key-point-text">Если бы Земля затормозила — нас бы <strong>снесло</strong>, как пассажиров в резко тормозящем автобусе</span>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/1e2f533a9-e7b2-4927-9da9-f2d74b9b0b33.png" alt="Вращение Земли">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 9: Topic 4 - Continuation -->
+<div class="slide bg-mint" data-slide="9">
+  <div class="slide-number">08 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Линейная анимация: скучный, но стабильный</h2>
+    <p class="animate-in delay-2">Наши вестибулярные аппараты реагируют только на <span class="highlight-mint">изменение скорости</span>, на ускорение. Если скорость постоянна — хоть 1000 миль в час — вы её не чувствуете.</p>
+    <div class="steps animate-in delay-3">
+      <div class="step">
+        <div class="step-num step-num-mint">🎬</div>
+        <div class="step-text"><strong>Linear animation</strong> (без ease) — кажется мёртвой и роботизированной</div>
+      </div>
+      <div class="step">
+        <div class="step-num step-num-mint">🌍</div>
+        <div class="step-text"><strong>Земля</strong> — идеальный linear motion. Скорость постоянна, ускорение равно нулю</div>
+      </div>
+      <div class="step">
+        <div class="step-num step-num-mint">✨</div>
+        <div class="step-text">Нам нужно <strong>ускорение и замедление</strong>, чтобы «почувствовать» движение</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 10: Topic 5 - Title -->
+<div class="slide bg-gray" data-slide="10">
+  <div class="slide-number">09 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji">🛰️</span>
+        <h2>Что такое невесомость?</h2>
+      </div>
+      <p>Это самый грандиозный <span style="color:var(--accent-blue);font-weight:600;">обман</span> в истории человеческого восприятия!</p>
+      <p style="font-size:20px;font-weight:600;color:var(--accent-blue);margin:12px 0;">«Там нет гравитации» — ВРАНЬЁ!</p>
+      <p>На МКС гравитация составляет <strong>90%</strong> от той, что здесь, в этой аудитории!</p>
+      <div class="quote-block">
+        Космонавты — это то же яблоко, только оно летит вбок с первой космической скоростью.
+      </div>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/19d8126ee-cbd0-4c12-9123-782cf1d041a1.png" alt="Невесомость">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 11: Topic 5 - Continuation -->
+<div class="slide bg-gray" data-slide="11">
+  <div class="slide-number">10 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Свободное падение = Невесомость</h2>
+    <div class="steps animate-in delay-2">
+      <div class="step">
+        <div class="step-num step-num-blue">1</div>
+        <div class="step-text">Представьте лифт, у которого <strong>оборвался трос</strong>. Вы падаете вниз.</div>
+      </div>
+      <div class="step">
+        <div class="step-num step-num-blue">2</div>
+        <div class="step-text">Пол убегает у вас из-под ног. Вы <strong>перестаёте давить</strong> на пол.</div>
+      </div>
+      <div class="step">
+        <div class="step-num step-num-blue">3</div>
+        <div class="step-text">МКС всё время <strong>падает на Землю</strong>, но «промахивается» из-за боковой скорости.</div>
+      </div>
+      <div class="step">
+        <div class="step-num step-num-lavender"></div>
+        <div class="step-text"><strong>Невесомость</strong> = отсутствие силы реакции опоры. В UX — ощущение «парения» элемента в своём слое.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 12: Topic 6 - Title -->
+<div class="slide bg-peach" data-slide="12">
+  <div class="slide-number">11 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji"></span>
+        <h2>Почему трудно толкать тяжёлое?</h2>
+      </div>
+      <p>Потому что <span class="highlight-peach">Лень</span> — фундаментальный закон природы! Мы, физики, называем это <strong>Инерцией</strong>.</p>
+      <div class="quote-block">
+        Вещи ненавидят менять своё состояние. Если лежит — хочет лежать вечно. Если катится — хочет катиться вечно.
+      </div>
+      <p>Вы боретесь не с весом. Вы боретесь с <span class="highlight-peach">Массой</span>.</p>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/1753b09b5-9b3a-4b29-a161-550f80c8d70c.png" alt="Инерция">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 13: Topic 6 - Continuation -->
+<div class="slide bg-peach" data-slide="13">
+  <div class="slide-number">12 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Масса ≠ Вес</h2>
+    <p class="animate-in delay-2">В открытом космосе огромная глыба металла <strong>ничего не весит</strong>! Но чтобы разогнать её или остановить — придётся пыхтеть точно так же.</p>
+    <div class="icon-grid animate-in delay-3">
+      <div class="icon-card">
+        <div class="icon">🧊</div>
+        <div class="label">Без веса</div>
+        <div class="desc">В невесомости</div>
+      </div>
+      <div class="icon-card">
+        <div class="icon">💪</div>
+        <div class="label">Та же масса</div>
+        <div class="desc">Количество атомов</div>
+      </div>
+      <div class="icon-card">
+        <div class="icon">🔄</div>
+        <div class="label">Та же инерция</div>
+        <div class="desc">Сопротивление изменению</div>
+      </div>
+    </div>
+    <div class="feynman animate-in delay-4">
+      <div class="feynman-label">💡 UX-дизайн</div>
+      Длинная страница — большой скролл с плавным замедлением. Лёгкая страничка останавливается быстро. Вы интуитивно программируете массу.
+    </div>
+  </div>
+</div>
+
+<!-- Slide 14: Topic 7 - Title -->
+<div class="slide bg-mint" data-slide="14">
+  <div class="slide-number">13 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji">🦵</span>
+        <h2>Почему мы отталкиваемся от земли?</h2>
+      </div>
+      <p>Потому что вы <span class="highlight-mint">пинаете всю планету</span>!</p>
+      <p>Вы бьёте Землю ногой назад, а она, согласно Третьему закону Ньютона, <strong>бьёт вас вперёд</strong>.</p>
+      <div class="formula-block">
+        <div class="formula" style="color:var(--accent-mint);">Действие = Противодействие</div>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-top:12px;">Земля настолько массивна, что её ускорение равно одной миллиардной диаметра протона.</p>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/10fb966d1-b341-46d8-ba7a-c55e19a3239b.png" alt="Ходьба">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 15: Topic 7 - Continuation -->
+<div class="slide bg-mint" data-slide="15">
+  <div class="slide-number">14 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Дизайн взаимодействия: действие и ответ</h2>
+    <p class="animate-in delay-2">Любой хороший дизайн построен на этом же принципе: вы нажимаете кнопку (действие) — она должна дать <span class="highlight-mint">ответ</span> (противодействие).</p>
+    <div class="comparison animate-in delay-3">
+      <div class="comparison-card card-mint">
+        <h3>🚀 Ракета</h3>
+        <p>Ей не нужна Земля для пинка. Она пинает свои выхлопные газы. Газ вниз — ракета вверх. Чистая механика.</p>
+      </div>
+      <div class="comparison-card card-peach">
+        <h3> UI-дизайн</h3>
+        <p>Кнопка нажата → анимация + звук + тактильный отклик. <strong>Действие → Реакция</strong>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 16: Topic 8 - Title -->
+<div class="slide bg-pink" data-slide="16">
+  <div class="slide-number">15 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji">🚗</span>
+        <h2>Почему автомобиль заносит?</h2>
+      </div>
+      <p>Потому что резина сдалась в борьбе с <span class="highlight-pink">Инерцией</span>.</p>
+      <p>Автомобиль — массивное, упрямое тело. Оно <strong>хочет ехать прямо</strong>.</p>
+      <div class="key-points animate-in delay-3">
+        <div class="key-point">
+          <span class="key-point-icon">🔄</span>
+          <span class="key-point-text">Чтобы повернуть, нужна сила к <strong>центру поворота</strong></span>
+        </div>
+        <div class="key-point">
+          <span class="key-point-icon">🔧</span>
+          <span class="key-point-text">Эту силу создаёт <strong>трение</strong> шин об асфальт</span>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/161370efb-35a7-4b07-a7bf-437e05aebe71.png" alt="Занос">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 17: Topic 8 - Continuation -->
+<div class="slide bg-pink" data-slide="17">
+  <div class="slide-number">16 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Когда связь рвётся</h2>
+    <p class="animate-in delay-2">Если вы входите в поворот слишком быстро — требуемая центростремительная сила становится <span class="highlight-pink">больше</span>, чем максимально возможная сила трения.</p>
+    <div class="steps animate-in delay-3">
+      <div class="step">
+        <div class="step-num step-num-peach"></div>
+        <div class="step-text"><strong>Медленно:</strong> резина цепляется за микронеровности — машина слушается руля</div>
+      </div>
+      <div class="step">
+        <div class="step-num step-num-pink">🐇</div>
+        <div class="step-text"><strong>Быстро:</strong> связь рвётся. Инерция побеждает. Машина едет <strong>по касательной</strong></div>
+      </div>
+      <div class="step">
+        <div class="step-num step-num-mint">💡</div>
+        <div class="step-text"><strong>UX-аналог:</strong> пользователь слишком быстро скроллит → интерфейс «не успевает» → разрыв связи. Нужны скелетоны-заглушки.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 18: Topic 9 - Title -->
+<div class="slide bg-lavender" data-slide="18">
+  <div class="slide-number">17 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji">🔴</span>
+        <h2>Почему легче катить, чем тащить?</h2>
+      </div>
+      <p>Колесо — это <span class="highlight-lavender">способ обмануть сухое трение</span>, не устраняя его полностью.</p>
+      <div class="key-points animate-in delay-2">
+        <div class="key-point">
+          <span class="key-point-icon">📦</span>
+          <span class="key-point-text"><strong>Тащить:</strong> рвёте молекулярные связи по всей площади. Энергия уходит в тепло и звук.</span>
+        </div>
+        <div class="key-point">
+          <span class="key-point-icon">⚙️</span>
+          <span class="key-point-text"><strong>Катить:</strong> нижняя точка колеса имеет <strong>нулевую скорость</strong> относительно дороги.</span>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/1692188ab-bf6c-49be-912b-6b274403b126.png" alt="Колесо vs тащить">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 19: Topic 9 - Continuation -->
+<div class="slide bg-lavender" data-slide="19">
+  <div class="slide-number">18 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Перекатывание точки опоры</h2>
+    <p class="animate-in delay-2">Колесо постоянно «отрывает» материал от земли, а не «скребёт» по ней. Энергия тратится только на <span class="highlight-lavender">деформацию</span> — это трение качения, которое в <strong>десятки раз меньше</strong>.</p>
+    <div class="comparison animate-in delay-3">
+      <div class="comparison-card card-peach">
+        <h3>📦 Скольжение</h3>
+        <p>Рывок, разрыв связей, нагрев, скрежет. Огромная потеря энергии.</p>
+      </div>
+      <div class="comparison-card card-lavender">
+        <h3>🔴 Качение</h3>
+        <p>Плавный перекат, нулевая скорость в точке контакта. Минимум потерь.</p>
+      </div>
+    </div>
+    <div class="feynman animate-in delay-4">
+      <div class="feynman-label">💡 Цифровой дизайн</div>
+      Плавная прокрутка с инерцией — это «колесо» для взгляда. Рывки ползунка — «трение скольжения».
+    </div>
+  </div>
+</div>
+
+<!-- Slide 20: Topic 10 - Title -->
+<div class="slide bg-blue" data-slide="20">
+  <div class="slide-number">19 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji">💡</span>
+        <h2>Что такое скорость света?</h2>
+      </div>
+      <p><span class="highlight">c</span> — это не предел скорости, это <strong>предел причинности</strong>. Это скорость распространения информации в нашей Вселенной.</p>
+      <div class="formula-block">
+        <div class="formula">c ≈ 300 000 км/с</div>
+      </div>
+      <p style="font-size:14px;color:var(--text-muted);margin-top:12px;">Тактовая частота процессора «симулятора Вселенной»</p>
+      <div class="quote-block">
+        Если у объекта есть масса покоя — для разгона до <strong>c</strong> потребуется <strong>бесконечная энергия</strong>.
+      </div>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/11c80b6d3-0beb-426f-8668-a7de6f42e5ea.png" alt="Скорость света">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 21: Topic 10 - Continuation -->
+<div class="slide bg-blue" data-slide="21">
+  <div class="slide-number">20 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Шлагбаум природы</h2>
+    <p class="animate-in delay-2">По мере приближения к <span class="highlight">c</span> масса (инерция) объекта <strong>растёт, уходит в бесконечность</strong>.</p>
+    <div class="comparison animate-in delay-3">
+      <div class="comparison-card card-blue">
+        <h3>🖥️ Частота экрана</h3>
+        <p>Вы не можете сделать анимацию быстрее, чем 120 Гц. Кадр между кадрами просто не отобразится.</p>
+      </div>
+      <div class="comparison-card card-lavender">
+        <h3>🌌 Скорость света</h3>
+        <p><strong>c</strong> — ограничение «пространства-времени». Шлагбаум. Иначе следствия наступали бы раньше причин.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 22: Topic 11 - Title -->
+<div class="slide bg-lavender" data-slide="22">
+  <div class="slide-number">21 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji"></span>
+        <h2>Замедление времени</h2>
+      </div>
+      <p>Время — это не река, текущая одинаково для всех. Время — это <span class="highlight-lavender">личный опыт каждого наблюдателя</span>.</p>
+      <div class="quote-block">
+        Представьте <strong>световые часы</strong>: два зеркала, между ними скачет фотон. Тик-так.
+      </div>
+      <p>Если часы летят с огромной скоростью, вы видите, что фотон бежит по <strong>диагонали (зигзагом)</strong>. Путь стал длиннее!</p>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/1c3aa5fe7-9875-4b60-b5f0-55e5e8c3b7d7.png" alt="Световые часы">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 23: Topic 11 - Continuation -->
+<div class="slide bg-lavender" data-slide="23">
+  <div class="slide-number">22 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Слоу-моушн Вселенной</h2>
+    <p class="animate-in delay-2">Фотон НЕ МОЖЕТ двигаться быстрее <strong>c</strong>. Единственный выход: <span class="highlight-lavender">растянуть время</span>. Тик-так становится реже.</p>
+    <div class="steps animate-in delay-3">
+      <div class="step">
+        <div class="step-num step-num-lavender">🚀</div>
+        <div class="step-text">Для пилота корабля всё нормально. Но для вас на перроне — время на корабле <strong>течёт медленнее</strong>.</div>
+      </div>
+      <div class="step">
+        <div class="step-num step-num-lavender">🧪</div>
+        <div class="step-text">Доказано экспериментально на <strong>атомных часах в самолётах</strong>.</div>
+      </div>
+      <div class="step">
+        <div class="step-num step-num-lavender"></div>
+        <div class="step-text">Релятивистское замедление = <strong>встроенный слоу-моушн</strong> Вселенной для быстрых объектов.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 24: Topic 12 - Title -->
+<div class="slide bg-peach" data-slide="24">
+  <div class="slide-number">23 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji"></span>
+        <h2>Что такое E=mc²?</h2>
+      </div>
+      <p>Это не формула превращения массы в энергию. Это формула <span class="highlight-peach">ТОЖДЕСТВА</span>.</p>
+      <div class="formula-block" style="background:var(--pastel-peach);">
+        <div class="formula" style="color:var(--accent-peach);">E = mc²</div>
+      </div>
+      <p><strong>Масса И ЕСТЬ энергия</strong>, только в сжатом, замороженном виде.</p>
+      <p style="font-size:14px;color:var(--text-muted);margin-top:12px;">c² = 90 000 000 000 000 000 — гигантское число!</p>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/1a45f56cb-46ee-435e-8ae5-6d3d287c4ce7.png" alt="E=mc²">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 25: Topic 12 - Continuation -->
+<div class="slide bg-peach" data-slide="25">
+  <div class="slide-number">24 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Двигатель Вселенной</h2>
+    <p class="animate-in delay-2">Сжатая пружина весит <span class="highlight-peach">чуть-чуть больше</span>, чем распрямлённая! Потому что энергия упругости тоже обладает массой.</p>
+    <div class="key-points animate-in delay-3">
+      <div class="key-point">
+        <span class="key-point-icon">⭐</span>
+        <span class="key-point-text"><strong>Звёзды не горят</strong> — они теряют массу. 4 атома водорода → 1 гелий. Разница масс превращается в излучение.</span>
+      </div>
+      <div class="key-point">
+        <span class="key-point-icon">💎</span>
+        <span class="key-point-text"><strong>Освещённый шар</strong> весит на ничтожную долю больше, чем шар в темноте (давление света).</span>
+      </div>
+      <div class="key-point">
+        <span class="key-point-icon"></span>
+        <span class="key-point-text"><strong>Чек из банка:</strong> сколько энергии получите, если полностью уничтожите массу.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 26: Topic 13 - Title -->
+<div class="slide bg-blue" data-slide="26">
+  <div class="slide-number">25 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji"></span>
+        <h2>Прилив и отлив дважды в сутки</h2>
+      </div>
+      <p>Обычно рисуют: Луна притянула воду с одной стороны. <span class="highlight">Это неверно!</span> Так было бы только одно наводнение.</p>
+      <p>На самом деле всё связано с <span class="highlight">дифференциальной гравитацией</span>.</p>
+      <div class="key-points animate-in delay-3">
+        <div class="key-point">
+          <span class="key-point-icon">️</span>
+          <span class="key-point-text"><strong>Ближняя сторона:</strong> вода притягивается сильнее центра Земли → «убегает» к Луне → горб №1</span>
+        </div>
+        <div class="key-point">
+          <span class="key-point-icon">🅱️</span>
+          <span class="key-point-text"><strong>Дальняя сторона:</strong> центр Земли притягивается сильнее воды → Земля «убегает» от воды → горб №2</span>
+        </div>
+      </div>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/14056b6a5-15c0-4c52-9fed-66c14ebd2599.png" alt="Приливы">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 27: Topic 13 - Continuation -->
+<div class="slide bg-blue" data-slide="27">
+  <div class="slide-number">26 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Два горба, одно объяснение</h2>
+    <p class="animate-in delay-2">Эти два горба стоят на месте относительно Луны, а <span class="highlight">Земля проворачивается под ними</span>.</p>
+    <div class="steps animate-in delay-3">
+      <div class="step">
+        <div class="step-num step-num-blue">1</div>
+        <div class="step-text">Проезжаем под <strong>горбом №1</strong> → прилив</div>
+      </div>
+      <div class="step">
+        <div class="step-num step-num-blue">2</div>
+        <div class="step-text">Съезжаем в <strong>яму</strong> → отлив</div>
+      </div>
+      <div class="step">
+        <div class="step-num step-num-blue">3</div>
+        <div class="step-text">Через 12 часов приезжаем под <strong>горбом №2</strong> → снова прилив</div>
+      </div>
+    </div>
+    <div class="feynman animate-in delay-4">
+      <div class="feynman-label">💡 3D-моделирование</div>
+      Если растягиваете сферу двумя пальцами с двух сторон — получаете эллипсоид. Гравитация Луны «растягивает» водную оболочку Земли.
+    </div>
+  </div>
+</div>
+
+<!-- Slide 28: Topic 14 - Title -->
+<div class="slide bg-pink" data-slide="28">
+  <div class="slide-number">27 / 30</div>
+  <div class="slide-inner slide-content-split">
+    <div class="slide-content-text animate-in delay-1">
+      <div class="section-header">
+        <span class="slide-emoji">💫</span>
+        <h2>Может ли гравитация отталкивать?</h2>
+      </div>
+      <p>В классической физике — <strong>нет</strong>. Гравитация — это всегда притяжение. Массы хотят быть вместе.</p>
+      <p style="font-size:20px;font-weight:600;color:var(--accent-pink);margin:16px 0;">НО! Вселенная расширяется... УСКОРЯЕТСЯ!</p>
+      <p>Как будто кто-то накачивает пространство изнутри. Мы дали этому название: <span class="highlight-pink">«Тёмная энергия»</span>.</p>
+      <div class="quote-block">
+        Она расталкивает галактики друг от друга. В масштабах Вселенной — <strong>да, отталкивание есть</strong>.
+      </div>
+    </div>
+    <div class="slide-content-image animate-in delay-3">
+      <div class="img-container">
+        <img src="https://image.qwenlm.ai/public_source/2ffc054d-341d-430d-b1bf-19a71c06f627/1b9984e90-4579-4bb5-a281-74cbab3543c2.png" alt="Тёмная энергия">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 29: Topic 14 - Continuation -->
+<div class="slide bg-pink" data-slide="29">
+  <div class="slide-number">28 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <h2 class="animate-in delay-1">Скрытые настройки гравитации</h2>
+    <p class="animate-in delay-2">В вашей комнате тёмной энергии нет. Ваш стул не взлетит к потолку. <span class="highlight-pink">Законы Ньютона</span> для прыжков и падений работают идеально.</p>
+    <div class="comparison animate-in delay-3">
+      <div class="comparison-card card-pink">
+        <h3> Комната</h3>
+        <p>Ньютон. Гравитация притягивает. Всё понятно и предсказуемо.</p>
+      </div>
+      <div class="comparison-card card-lavender">
+        <h3> Вселенная</h3>
+        <p>Тёмная энергия. Расширение ускоряется. Скрытые настройки на экстремальных масштабах.</p>
+      </div>
+    </div>
+    <div class="feynman animate-in delay-4">
+      <div class="feynman-label"> Дизайн</div>
+      У гравитации, как у хорошего дизайна, есть скрытые настройки, которые проявляются только на экстремальных масштабах.
+    </div>
+  </div>
+</div>
+
+<!-- Slide 30: Topic 15 + Closing -->
+<div class="slide slide-closing" data-slide="30">
+  <div class="slide-number">29 / 30</div>
+  <div class="slide-inner slide-content-full">
+    <div class="slide-emoji animate-in delay-1" style="font-size:64px;">🕳️</div>
+    <h2 class="animate-in delay-2">Чёрная дыра</h2>
+    <p class="animate-in delay-3" style="font-size:18px;max-width:700px;">Место, где <strong>пространство-время споткнулось о собственные шнурки</strong> и упало лицом вниз.</p>
+    <div class="key-points animate-in delay-4" style="max-width:700px;">
+      <div class="key-point">
+        <span class="key-point-icon"></span>
+        <span class="key-point-text"><strong>Коллапс:</strong> когда топливо звезды кончается — ничто не может остановить сжатие</span>
+      </div>
+      <div class="key-point">
+        <span class="key-point-icon"></span>
+        <span class="key-point-text"><strong>Горизонт событий:</strong> скорость убегания > c. Даже свет не может выйти.</span>
+      </div>
+      <div class="key-point">
+        <span class="key-point-icon">❓</span>
+        <span class="key-point-text"><strong>Сингулярность:</strong> точка, где уравнения выдают бесконечности — как сломанный плагин в Figma</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 31: Final Closing -->
+<div class="slide slide-closing" data-slide="31">
+  <div class="slide-inner" style="align-items:center;">
+    <div class="slide-emoji animate-in delay-1" style="font-size:64px;">🌌</div>
+    <h1 class="animate-in delay-2" style="font-size:44px;">Спасибо за внимание!</h1>
+    <p class="animate-in delay-3">Физика — это не набор формул. Это <strong>способ видеть мир</strong>.</p>
+    <div class="animate-in delay-4" style="margin-top:24px;">
+      <span class="tag tag-blue">Гравитация</span>
+      <span class="tag tag-lavender" style="margin-left:8px;">Относительность</span>
+      <span class="tag tag-mint" style="margin-left:8px;">Механика</span>
+      <span class="tag tag-peach" style="margin-left:8px;">Космос</span>
+    </div>
+    <p class="animate-in delay-5" style="margin-top:40px;font-size:16px;color:var(--text-muted);">15 вопросов. 30 слайдов. Одна Вселенная.</p>
+  </div>
+</div>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav-controls">
+  <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <div class="nav-progress" id="navProgress"></div>
+  <span class="nav-counter" id="navCounter">1 / 31</span>
+  <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>
+</div>
+
+<script>
+let currentSlide = 1;
+const totalSlides = 31;
+const slides = document.querySelectorAll('.slide');
+const progressBar = document.getElementById('progressBar');
+const navProgress = document.getElementById('navProgress');
+const navCounter = document.getElementById('navCounter');
+
+// Create nav dots
+for (let i = 1; i <= totalSlides; i++) {
+  const dot = document.createElement('div');
+  dot.className = 'nav-dot' + (i === 1 ? ' active' : '');
+  dot.onclick = () => goToSlide(i);
+  navProgress.appendChild(dot);
+}
+
+function updateUI() {
+  // Progress bar
+  const progress = (currentSlide / totalSlides) * 100;
+  progressBar.style.width = progress + '%';
+  
+  // Counter
+  navCounter.textContent = currentSlide + ' / ' + totalSlides;
+  
+  // Dots
+  const dots = navProgress.querySelectorAll('.nav-dot');
+  dots.forEach((dot, i) => {
+    dot.className = 'nav-dot' + (i + 1 === currentSlide ? ' active' : '');
+  });
+  
+  // Button states
+  document.getElementById('prevBtn').style.opacity = currentSlide === 1 ? '0.4' : '1';
+  document.getElementById('nextBtn').style.opacity = currentSlide === totalSlides ? '0.4' : '1';
+}
+
+function goToSlide(n) {
+  if (n < 1 || n > totalSlides || n === currentSlide) return;
+  
+  const direction = n > currentSlide ? 1 : -1;
+  const currentEl = slides[currentSlide - 1];
+  const nextEl = slides[n - 1];
+  
+  currentEl.classList.remove('active');
+  currentEl.classList.add(direction > 0 ? 'exit-left' : 'enter-right');
+  
+  nextEl.style.transform = direction > 0 ? 'translateX(100px)' : 'translateX(-100px)';
+  nextEl.classList.add('active');
+  
+  // Reset animation
+  const animatedElements = nextEl.querySelectorAll('.animate-in');
+  animatedElements.forEach(el => {
+    el.style.animation = 'none';
+    el.offsetHeight; // trigger reflow
+    el.style.animation = '';
+  });
+  
+  setTimeout(() => {
+    currentEl.classList.remove('exit-left', 'enter-right');
+    currentEl.style.transform = '';
+  }, 600);
+  
+  currentSlide = n;
+  updateUI();
+}
+
+function changeSlide(direction) {
+  goToSlide(currentSlide + direction);
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+    e.preventDefault();
+    changeSlide(1);
+  } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+    e.preventDefault();
+    changeSlide(-1);
+  } else if (e.key === 'Home') {
+    e.preventDefault();
+    goToSlide(1);
+  } else if (e.key === 'End') {
+    e.preventDefault();
+    goToSlide(totalSlides);
+  }
+});
+
+// Touch/swipe support
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener('touchstart', (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener('touchend', (e) => {
+  touchEndX = e.changedTouches[0].screenX;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > 50) {
+    changeSlide(diff > 0 ? 1 : -1);
+  }
+});
+
+// Initialize
+updateUI();
+</script>
+
+</body>
+</html>
+
